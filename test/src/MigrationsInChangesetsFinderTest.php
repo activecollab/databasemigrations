@@ -16,21 +16,6 @@ use ActiveCollab\DatabaseMigrations\Finder\MigrationsInChangesetsFinder;
 class MigrationsInChangesetsFinderTest extends TestCase
 {
     /**
-     * @var string
-     */
-    private $migrations_path;
-
-    /**
-     * {@inheritdoc}
-     */
-    public function setUp()
-    {
-        parent::setUp();
-
-        $this->migrations_path = dirname(__DIR__) . '/migrations_in_changesets';
-    }
-
-    /**
      * @expectedException \BadMethodCallException
      * @expectedExceptionMessage Migration dir, or a list of migration dirs is required
      */

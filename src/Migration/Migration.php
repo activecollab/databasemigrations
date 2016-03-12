@@ -43,6 +43,14 @@ abstract class Migration implements MigrationInterface
     private $execute_after = [];
 
     /**
+     * {@inheritdoc}
+     */
+    public function getExecuteAfter()
+    {
+        return $this->execute_after;
+    }
+
+    /**
      * Make sure that this migration is executed after given list of migrations.
      *
      * @param array ...$migration_paths

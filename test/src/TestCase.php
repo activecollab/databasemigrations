@@ -36,6 +36,11 @@ abstract class TestCase extends \PHPUnit_Framework_TestCase
     protected $connection;
 
     /**
+     * @var string
+     */
+    protected $migrations_path;
+
+    /**
      * Set up test environment.
      */
     public function setUp()
@@ -67,6 +72,9 @@ abstract class TestCase extends \PHPUnit_Framework_TestCase
             $this->connection->dropTable($table_name);
         }
         $this->connection->execute('SET foreign_key_checks = 1;');
+
+        $this->migrations_path = dirname(__DIR__) . '/migrations_in_changesets';
+        $this->assertFileExists($this->migrations_path);
     }
 
     /**

@@ -17,4 +17,11 @@ interface MigrationInterface
      * Migrate up.
      */
     public function up();
+
+    /**
+     * Return array of migrations that need to be executed before this migration can be executed.
+     *
+     * @return array
+     */
+    public function getExecuteAfter();
 }

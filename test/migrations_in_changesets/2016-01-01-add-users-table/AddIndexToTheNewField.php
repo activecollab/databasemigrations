@@ -20,7 +20,7 @@ class AddIndexToTheNewField extends Migration
      */
     protected function configure()
     {
-        $this->executeAfter(__DIR__ . '/AddFieldToUsersTable.php.php');
+        $this->executeAfter(__DIR__ . '/AddFieldToUsersTable.php');
     }
 
     /**
