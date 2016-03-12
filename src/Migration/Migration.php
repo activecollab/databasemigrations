@@ -40,8 +40,9 @@ abstract class Migration implements MigrationInterface
     /**
      * {@inheritdoc}
      */
-    public function down()
+    public function canExecute(&$reason = null)
     {
+        return true;
     }
 
     /**
@@ -65,5 +66,12 @@ abstract class Migration implements MigrationInterface
     protected function executeAfter(...$migration_paths)
     {
         $this->execute_after = array_merge($this->execute_after, $migration_paths);
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function down()
+    {
     }
 }

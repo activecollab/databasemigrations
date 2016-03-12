@@ -14,6 +14,21 @@ namespace ActiveCollab\DatabaseMigrations\Migration;
 interface MigrationInterface
 {
     /**
+     * Return true if all pre-conditions are met for this migration to run.
+     *
+     * @param  string|null $reason
+     * @return bool
+     */
+    public function canExecute(&$reason = null);
+
+    /**
+     * Return array of migrations that need to be executed before this migration can be executed.
+     *
+     * @return array
+     */
+    public function getExecuteAfter();
+
+    /**
      * Migrate up.
      */
     public function up();
@@ -22,11 +37,4 @@ interface MigrationInterface
      * Rollback changes made by this migration.
      */
     public function down();
-
-    /**
-     * Return array of migrations that need to be executed before this migration can be executed.
-     *
-     * @return array
-     */
-    public function getExecuteAfter();
 }
