@@ -9,7 +9,10 @@
 namespace ActiveCollab\DatabaseMigrations\Test;
 
 use ActiveCollab\DatabaseConnection\Connection\MysqliConnection;
+use Monolog\Handler\NullHandler;
+use Monolog\Logger;
 use mysqli;
+use Psr\Log\LoggerInterface;
 use RuntimeException;
 
 /**
@@ -17,6 +20,11 @@ use RuntimeException;
  */
 abstract class TestCase extends \PHPUnit_Framework_TestCase
 {
+    /**
+     * @var LoggerInterface
+     */
+    protected $log;
+
     /**
      * @var mysqli
      */
@@ -33,6 +41,8 @@ abstract class TestCase extends \PHPUnit_Framework_TestCase
     public function setUp()
     {
         parent::setUp();
+
+        $this->log = new Logger('database_migrations_test', [new NullHandler()]);
 
         $this->link = new \MySQLi('localhost', 'root', '');
 
