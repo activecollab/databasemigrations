@@ -95,4 +95,23 @@ class MigrationsInChangesetsFinderTest extends TestCase
         $this->assertArrayHasKey('\ActiveCollab\DatabaseMigrations\Test\NamepsacedMigrations\AddIndexToTheNewField', $map);
         $this->assertArrayHasKey('\ActiveCollab\DatabaseMigrations\Test\NamepsacedMigrations\AddIndexesToUsersTable', $map);
     }
+
+    /**
+     * Test if we can successfully load info from multiple migration dirs.
+     */
+    public function testMultipleMigrationDirs()
+    {
+        $finder = new MigrationsInChangesetsFinder($this->log, 'ActiveCollab\DatabaseMigrations\Test\NamepsacedMigrations', $this->migrations_path, dirname(__DIR__) . '/changesets/inject_in_migrations_with_changeset');
+
+        $map = $finder->getMigrationClassFilePathMap();
+
+        $this->assertInternalType('array', $map);
+        $this->assertCount(5, $map);
+
+        $this->assertArrayHasKey('\ActiveCollab\DatabaseMigrations\Test\NamepsacedMigrations\AddUsersTable', $map);
+        $this->assertArrayHasKey('\ActiveCollab\DatabaseMigrations\Test\NamepsacedMigrations\AddFieldToUsersTable', $map);
+        $this->assertArrayHasKey('\ActiveCollab\DatabaseMigrations\Test\NamepsacedMigrations\AddIndexToTheNewField', $map);
+        $this->assertArrayHasKey('\ActiveCollab\DatabaseMigrations\Test\NamepsacedMigrations\AddIndexesToUsersTable', $map);
+        $this->assertArrayHasKey('\ActiveCollab\DatabaseMigrations\Test\NamepsacedMigrations\AddUserRolesTable', $map);
+    }
 }
