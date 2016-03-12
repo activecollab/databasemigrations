@@ -20,7 +20,7 @@ class ChangesetNameTest extends TestCase
      */
     public function testFindMigrations()
     {
-        $finder = new MigrationsInChangesetsFinder($this->log, '', dirname(__DIR__) . '/migrations_in_changesets');
+        $finder = new MigrationsInChangesetsFinder($this->log, '', dirname(__DIR__) . '/changesets/migrations_in_changesets');
 
         $this->assertFalse($finder->isValidChangesetName('2016-01-01'));
         $this->assertFalse($finder->isValidChangesetName('fix-users-table'));

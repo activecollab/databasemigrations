@@ -73,7 +73,7 @@ abstract class TestCase extends \PHPUnit_Framework_TestCase
         }
         $this->connection->execute('SET foreign_key_checks = 1;');
 
-        $this->migrations_path = dirname(__DIR__) . '/migrations_in_changesets';
+        $this->migrations_path = dirname(__DIR__) . '/changesets/migrations_in_changesets';
         $this->assertFileExists($this->migrations_path);
     }
 

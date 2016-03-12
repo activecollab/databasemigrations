@@ -39,7 +39,7 @@ class MigrationsInChangesetsFinderTest extends TestCase
      */
     public function testErrorOnInvalidChangsetName()
     {
-        (new MigrationsInChangesetsFinder($this->log, '', dirname(__DIR__) . '/migrations_with_invalid_changeset_name'))->getMigrationClassFilePathMap();
+        (new MigrationsInChangesetsFinder($this->log, '', dirname(__DIR__) . '/changesets/migrations_with_invalid_changeset_name'))->getMigrationClassFilePathMap();
     }
 
     /**
