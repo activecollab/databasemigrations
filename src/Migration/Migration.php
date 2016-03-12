@@ -38,6 +38,13 @@ abstract class Migration implements MigrationInterface
     }
 
     /**
+     * {@inheritdoc}
+     */
+    public function down()
+    {
+    }
+
+    /**
      * @var string[]
      */
     private $execute_after = [];
