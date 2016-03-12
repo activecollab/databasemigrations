@@ -63,6 +63,7 @@ class MigrationsInChangesetsFinder implements FinderInterface
     public function getMigrationClassFilePathMap()
     {
         $migrations_by_changeset = [];
+        $total_migrations_found = 0;
 
         foreach ($this->migrations_dirs as $migrations_dir) {
             $file_system = new FileSystem(new LocalAdapter($migrations_dir));
@@ -82,12 +83,16 @@ class MigrationsInChangesetsFinder implements FinderInterface
 
                     if (empty($migrations_found)) {
                         $this->log->debug('No migrations found in {migrations_dir}/{changeset}', ['migrations_dir' => $migrations_dir, 'changeset' => $changeset_dir]);
+                    } else {
+                        $total_migrations_found += $migrations_found;
                     }
                 } else {
                     throw new RuntimeException("Value '$changeset_dir' is not a valid changeset name");
                 }
             }
         }
+
+        $this->log->debug('{total_migrations} migrations found {total_changesets} changesets', ['total_migrations' => $total_migrations_found, 'total_changesets' => count($migrations_by_changeset), 'changesets' => array_keys($migrations_by_changeset)]);
 
         ksort($migrations_by_changeset);
 
