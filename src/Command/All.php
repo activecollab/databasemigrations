@@ -45,5 +45,5 @@ trait All
     /**
      * @return MigrationsInterface
      */
-    abstract protected function getMigrations();
+    abstract protected function &getMigrations();
 }
