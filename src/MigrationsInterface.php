@@ -31,11 +31,22 @@ interface MigrationsInterface
     public function up(callable $output = null);
 
     /**
-     * Set all found migration as executed. Useful during app's installation, to mark existing migrations as migrated.
+     * Execute an individual migraion.
      *
-     * If $timestamp is NULL, current timestamp will be used.
-     *
-     * @param DateTimeValueInterface|null $timestamp
+     * @param MigrationInterface $migration
      */
-    public function setAllAsExecuted(DateTimeValueInterface $timestamp = null);
+    public function execute(MigrationInterface $migration);
+
+    /**
+     * Return true if $migration is executed.
+     *
+     * @param  MigrationInterface $migration
+     * @return bool
+     */
+    public function isExecuted(MigrationInterface $migration);
+
+    /**
+     * Set all found migration as executed. Useful during app's installation, to mark existing migrations as migrated.
+     */
+    public function setAllAsExecuted();
 }

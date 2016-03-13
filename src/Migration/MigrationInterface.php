@@ -32,9 +32,4 @@ interface MigrationInterface
      * Migrate up.
      */
     public function up();
-
-    /**
-     * Rollback changes made by this migration.
-     */
-    public function down();
 }

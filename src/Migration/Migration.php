@@ -67,11 +67,4 @@ abstract class Migration implements MigrationInterface
     {
         $this->execute_after = array_merge($this->execute_after, $migration_paths);
     }
-
-    /**
-     * {@inheritdoc}
-     */
-    public function down()
-    {
-    }
 }

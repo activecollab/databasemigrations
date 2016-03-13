@@ -11,8 +11,9 @@ namespace ActiveCollab\DatabaseMigrations;
 use ActiveCollab\DatabaseConnection\ConnectionInterface;
 use ActiveCollab\DatabaseMigrations\Finder\FinderInterface;
 use ActiveCollab\DatabaseMigrations\Migration\MigrationInterface;
-use ActiveCollab\DateValue\DateTimeValueInterface;
+use ActiveCollab\DateValue\DateTimeValue;
 use InvalidArgumentException;
+use LogicException;
 use Psr\Log\LoggerInterface;
 use ReflectionClass;
 use RuntimeException;
@@ -174,12 +175,7 @@ class Migrations implements MigrationsInterface
                 }
 
                 $reference_time = microtime(true);
-
-                $this->connection->transact(function () use ($migration) {
-                    $migration->up();
-                    $this->setAsExecuted($migration);
-                });
-
+                $this->execute($migration);
                 $exec_time = number_format(microtime(true) - $reference_time, 5, '.', '');
 
                 $this->log->debug('Migration {migration} executed', ['migration' => $migration_class, 'exec_time' => (float) $exec_time]);
@@ -222,24 +218,45 @@ class Migrations implements MigrationsInterface
     /**
      * {@inheritdoc}
      */
-    public function setAllAsExecuted(DateTimeValueInterface $timestamp = null)
+    public function execute(MigrationInterface $migration)
     {
-        foreach ($this->getMigrations() as $migration) {
-            $this->setAsExecuted($migration);
+        if ($this->isExecuted($migration)) {
+            throw new LogicException('Migration ' . get_class($migration) . ' is already executed');
         }
-    }
 
-    private function isExecuted(MigrationInterface $migration)
-    {
-        return false;
+        $this->connection->transact(function () use ($migration) {
+            $migration->up();
+
+            $this->connection->insert($this->getTableName(), [
+                'migration' => get_class($migration),
+                'executed_at' => new DateTimeValue(),
+            ]);
+        });
     }
 
     /**
-     * Set $migration as executed.
-     *
-     * @param MigrationInterface $migration
+     * {@inheritdoc}
      */
-    public function setAsExecuted(MigrationInterface $migration)
+    public function isExecuted(MigrationInterface $migration)
     {
+        return (bool) $this->connection->count($this->getTableName(), ['`migration` = ?', get_class($migration)]);
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function setAllAsExecuted()
+    {
+        $this->connection->transact(function () {
+            $timestamp = new DateTimeValue();
+
+            $batch = $this->connection->batchInsert($this->getTableName(), ['migration', 'executed_at'], 50, ConnectionInterface::REPLACE);
+
+            foreach ($this->getMigrations() as $migration) {
+                $batch->insert(get_class($migration), $timestamp);
+            }
+
+            $batch->done();
+        });
     }
 }
