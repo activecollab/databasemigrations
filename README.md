@@ -93,4 +93,4 @@ Database Migrations package includes a couple of traits that make implementation
 
 In order to use these traits, you need to include them in a regular Symfony Console class, and provide implementation of `getMigrations()` method. This method needs to return a valid, configured `MigrationsInterface` instance.
 
-Create helper has extra requirements and extension points that lets you configure how migration stubs are created. Please check protected and abstract methods under `Override` comment in \src\Command\Create.php file for details.
+Create helper has extra requirements and extension points that lets you configure how migration stubs are created. Please check protected and abstract methods under `Override` comment in `/src/Command/Create.php` file for details.
