@@ -86,7 +86,11 @@ trait Create
         if ($header_comment = $this->getHeaderComment()) {
             $contents[] = '/*';
             $contents = array_merge($contents, array_map(function($line) {
-               return ' * ' . $line;
+                if ($line) {
+                    return ' * ' . $line;
+                } else {
+                    return ' *';
+                }
             }, explode("\n", $header_comment)));
             $contents[] = ' */';
             $contents[] = '';
@@ -111,7 +115,7 @@ trait Create
         $contents[] = '    /**';
         $contents[] = '     * {@inheritdoc}';
         $contents[] = '     */';
-        $contents[] = '    function up()';
+        $contents[] = '    public function up()';
         $contents[] = '    {';
         $contents[] = '    }';
         $contents[] = '}';
