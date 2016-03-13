@@ -39,9 +39,39 @@ class AddUserRolesTable implements MigrationInterface
 }
 ```
 
+Migrations that extend `Migration` class get two important properties injected via constructor:
+
+1. `connection` - a `ActiveCollab\DatabaseConnection\ConnectionInterface` instance with valid connection to the database, and
+2. `log` - a PSR-3 `LoggerInterface` instance.
+
+```php
+<?php
+
+namespace Acme\App\Migrations;
+
+use ActiveCollab\DatabaseMigrations\Migration\Migration;
+
+class AddUserRolesTable extends Migration
+{
+    /**
+     * {@inheritdoc}
+     */
+    public function up()
+    {
+        if (!in_array('user_roles', $this->connection->getTableNames()) {
+            $this->log->debug('{table} not found in the database', ['table' => 'user_roles']);
+            $thos->connection->execute('CREATE TABLE STATEMENT');
+            $this->log->debug('{table} created', ['table' => 'user_roles']);
+        }
+    }
+}
+```
+
 ## Finders
 
-Migration classes are "discovered" using objects that implement `FinderInterface` interface. All that we expect from finders is that they return an array of where key is migration class name, and value is path where we can expect to find the class definition. This makes migration library independent on directory and file structure that you decide to use to organize your migrations.
+Migration classes are "discovered" using objects that implement `FinderInterface` interface. All that we expect from finders is that they return an array where key is migration class name, and value is path where we can expect to find the class definition. This makes migration library independent on directory and file structure that you decide to use to organize your migrations.
+
+This library currently implements only one Finder - Migrations in Changesets.
 
 ### Migrations in a Changeset Finder
 
