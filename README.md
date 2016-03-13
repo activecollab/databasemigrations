@@ -82,3 +82,13 @@ What we found to work really well for [Active Collab](https://www.activecollab.c
 * `2016-12-09-fix-users-table-indexes`
 
 Timestamp part of the changeset name is used for sorting, and details part is used to make it clear what the changeset is all about.
+
+## Command Line
+
+Database Migrations package includes a couple of traits that make implementation of commands that work with migrations easy. These commands are:
+
+* List all migrations and their status (All)
+* Run all non-executed migrations (Up)
+* Create a new migration file (Create)
+
+In order to use these traits, you need to include them in a regular Symfony Console class, and provide implementation of `getMigrations()` method. This method needs to return a valid, configured `MigrationsInterface` instance.
