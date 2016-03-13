@@ -27,7 +27,7 @@ trait Create
         $old_umask = umask(0);
 
         try {
-            $name = $this->getName($input);
+            $name = $this->getMigrationName($input);
 
             if (empty($name)) {
                 throw new \InvalidArgumentException('Migration name is required');
@@ -159,5 +159,5 @@ trait Create
      * @param  InputInterface $input
      * @return string
      */
-    abstract public function getName(InputInterface $input);
+    abstract public function getMigrationName(InputInterface $input);
 }
