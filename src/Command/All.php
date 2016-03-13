@@ -8,7 +8,6 @@
 
 namespace ActiveCollab\DatabaseMigrations\Command;
 
-use ActiveCollab\DatabaseMigrations\MigrationsInterface;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
 
@@ -17,6 +16,8 @@ use Symfony\Component\Console\Output\OutputInterface;
  */
 trait All
 {
+    use Base;
+
     /**
      * {@inheritdoc}
      */
@@ -25,10 +26,12 @@ trait All
         $migrations = $this->getMigrations()->getMigrations();
 
         if ($migrations_count = count($migrations)) {
+            $output->writeln('');
+
             if ($migrations_count === 1) {
-                $output->writeln('<info>One</info> migration found:');
+                $output->writeln('<info>One migration</info> found:');
             } else {
-                $output->writeln("<info>{$migrations_count}</info> migrations found:");
+                $output->writeln("<info>{$migrations_count} migrations</info> found:");
             }
             $output->writeln('');
 
@@ -36,7 +39,7 @@ trait All
                 $execution_status = $this->getMigrations()->isExecuted($migration) ? '<info>Executed</info>' : '<comment>Not executed</comment>';
                 $output->writeln('    <comment>*</comment> ' . get_class($migration) . " ($execution_status)");
             }
-
+            
             $output->writeln('');
         } else {
             $output->writeln('No migrations found');
@@ -44,9 +47,4 @@ trait All
 
         return 0;
     }
-
-    /**
-     * @return MigrationsInterface
-     */
-    abstract protected function &getMigrations();
 }
