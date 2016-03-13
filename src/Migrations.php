@@ -11,6 +11,7 @@ namespace ActiveCollab\DatabaseMigrations;
 use ActiveCollab\DatabaseConnection\ConnectionInterface;
 use ActiveCollab\DatabaseMigrations\Finder\FinderInterface;
 use ActiveCollab\DatabaseMigrations\Migration\MigrationInterface;
+use ActiveCollab\DateValue\DateTimeValueInterface;
 use Psr\Log\LoggerInterface;
 use ReflectionClass;
 use RuntimeException;
@@ -123,6 +124,13 @@ class Migrations implements MigrationsInterface
         return $result;
     }
 
+    /**
+     * Return migration class name based on migration's path.
+     *
+     * @param  string $migration_file_path
+     * @param  array  $migration_class_file_path_map
+     * @return string
+     */
     private function getMigrationClassByMigrationPath($migration_file_path, array $migration_class_file_path_map)
     {
         if ($migration_class = array_search($migration_file_path, $migration_class_file_path_map)) {
@@ -135,7 +143,63 @@ class Migrations implements MigrationsInterface
     /**
      * {@inheritdoc}
      */
-    public function up()
+    public function up(callable $output = null)
+    {
+        foreach ($this->getMigrations() as $migration) {
+            $migration_class = get_class($migration);
+
+            if ($this->isExecuted($migration)) {
+                $this->log->debug('Migration {migration} already executed', ['migration' => $migration_class]);
+
+                if ($output) {
+                    $output("Migration <comment>$migration_class</comment> is already executed");
+                }
+            } else {
+                $this->log->debug('Ready to execute {migration} migration', ['migration' => $migration_class]);
+
+                if ($output) {
+                    $output("Ready to execute <comment>$migration_class</comment> migration");
+                }
+
+                $reference_time = microtime(true);
+
+                $this->connection->transact(function () use ($migration) {
+                    $migration->up();
+                    $this->setAsExecuted($migration);
+                });
+
+                $exec_time = number_format(microtime(true) - $reference_time, 5, '.', '');
+
+                $this->log->debug('Migration {migration} executed', ['migration' => $migration_class, 'exec_time' => (float) $exec_time]);
+
+                if ($output) {
+                    $output("Migration <comment>$migration_class</comment> is executed in <comment>$exec_time seconds</comment>");
+                }
+            }
+        }
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function setAllAsExecuted(DateTimeValueInterface $timestamp = null)
+    {
+        foreach ($this->getMigrations() as $migration) {
+            $this->setAsExecuted($migration);
+        }
+    }
+
+    private function isExecuted(MigrationInterface $migration)
+    {
+        return false;
+    }
+
+    /**
+     * Set $migration as executed.
+     *
+     * @param MigrationInterface $migration
+     */
+    public function setAsExecuted(MigrationInterface $migration)
     {
     }
 }
