@@ -53,7 +53,7 @@ trait Create
                     throw new \RuntimeException("Migration '$migration_class' already exists at '$migration_class_path'");
                 } else {
                     if (file_put_contents($migration_class_path, $this->getMigrationFileContents($migration_class))) {
-                        $output->writeln('File <comment>'  . substr($migration_class_path, strlen(ENVIRONMENT_PATH)) .  '</comment> created');
+                        $output->writeln("File <comment>$migration_class_path</comment> created");
                     } else {
                         throw new \RuntimeException("Failed to create '$migration_class_path' file");
                     }
@@ -84,12 +84,16 @@ trait Create
         ];
 
         if ($header_comment = $this->getHeaderComment()) {
-            $contents = array_merge($contents, explode("\n", $header_comment));
+            $contents[] = '/*';
+            $contents = array_merge($contents, array_map(function($line) {
+               return ' * ' . $line;
+            }, explode("\n", $header_comment)));
+            $contents[] = '*/';
             $contents[] = '';
         }
 
         if ($namespace) {
-            $contents[] = 'namespace ' . $namespace;
+            $contents[] = 'namespace ' . $namespace . ';';
             $contents[] = '';
         }
 
