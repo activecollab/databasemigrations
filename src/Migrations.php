@@ -12,6 +12,7 @@ use ActiveCollab\DatabaseConnection\ConnectionInterface;
 use ActiveCollab\DatabaseMigrations\Finder\FinderInterface;
 use ActiveCollab\DatabaseMigrations\Migration\MigrationInterface;
 use ActiveCollab\DateValue\DateTimeValueInterface;
+use InvalidArgumentException;
 use Psr\Log\LoggerInterface;
 use ReflectionClass;
 use RuntimeException;
@@ -37,15 +38,26 @@ class Migrations implements MigrationsInterface
     private $log;
 
     /**
+     * @var string
+     */
+    private $table_name;
+
+    /**
      * @param ConnectionInterface $connection
      * @param FinderInterface     $finder
      * @param LoggerInterface     $log
+     * @param string              $table_name
      */
-    public function __construct(ConnectionInterface &$connection, FinderInterface &$finder, LoggerInterface &$log)
+    public function __construct(ConnectionInterface &$connection, FinderInterface &$finder, LoggerInterface &$log, $table_name = 'executed_database_migrations')
     {
+        if (empty($table_name)) {
+            throw new InvalidArgumentException('Table name is required');
+        }
+
         $this->connection = $connection;
         $this->finder = $finder;
         $this->log = $log;
+        $this->table_name = $table_name;
     }
 
     /**
@@ -177,6 +189,34 @@ class Migrations implements MigrationsInterface
                 }
             }
         }
+    }
+
+    /**
+     * @var bool|null
+     */
+    private $table_exists = null;
+
+    /**
+     * Return name of the table where we store info about executed migrations.
+     *
+     * @return string
+     */
+    public function getTableName()
+    {
+        if ($this->table_exists === null && !in_array($this->table_name, $this->connection->getTableNames())) {
+            $this->connection->execute('CREATE TABLE ' . $this->connection->escapeTableName($this->table_name) . ' (
+                `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
+                `migration` varchar(191) COLLATE utf8mb4_unicode_ci NOT NULL,
+                `executed_at` datetime NOT NULL,
+                PRIMARY KEY (`id`),
+                UNIQUE KEY `migration` (`migration`),
+                KEY `executed_on` (`executed_at`)
+            ) ENGINE=InnoDB CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;');
+
+            $this->table_exists = true;
+        }
+
+        return $this->table_name;
     }
 
     /**
