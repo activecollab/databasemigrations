@@ -88,7 +88,7 @@ trait Create
             $contents = array_merge($contents, array_map(function($line) {
                return ' * ' . $line;
             }, explode("\n", $header_comment)));
-            $contents[] = '*/';
+            $contents[] = ' */';
             $contents[] = '';
         }
 
@@ -104,7 +104,6 @@ trait Create
             $contents[] = '/**';
             $contents[] = ' * @package ' . $namespace;
             $contents[] = ' */';
-            $contents[] = '';
         }
 
         $contents[] = 'class ' . $class_name . ' extends Migration';
