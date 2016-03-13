@@ -8,14 +8,19 @@
 
 namespace ActiveCollab\DatabaseMigrations;
 
+use ActiveCollab\DatabaseMigrations\Finder\FinderInterface;
 use ActiveCollab\DatabaseMigrations\Migration\MigrationInterface;
-use ActiveCollab\DateValue\DateTimeValueInterface;
 
 /**
  * @package ActiveCollab\DatabaseMigrations
  */
 interface MigrationsInterface
 {
+    /**
+     * @return FinderInterface
+     */
+    public function &getFinder();
+
     /**
      * Find and return all migrations (using Finder object).
      *

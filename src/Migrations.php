@@ -62,6 +62,14 @@ class Migrations implements MigrationsInterface
     }
 
     /**
+     * {@inheritdoc}
+     */
+    public function &getFinder()
+    {
+        return $this->finder;
+    }
+
+    /**
      * @var bool
      */
     private $migrations_are_found = false;

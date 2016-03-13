@@ -19,4 +19,14 @@ interface FinderInterface
      * @return array
      */
     public function getMigrationClassFilePathMap();
+
+    /**
+     * Prepare migration file path based on classified migration name (DoSomethingAwesome) and optional extra arguments.
+     *
+     * @param  string      $classified_name
+     * @param  string|null $migrations_dir
+     * @param  array       $extra_arguments
+     * @return string
+     */
+    public function prepareMigrationPath($classified_name, $migrations_dir = null, ...$extra_arguments);
 }
