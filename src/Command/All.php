@@ -26,15 +26,18 @@ trait All
 
         if ($migrations_count = count($migrations)) {
             if ($migrations_count === 1) {
-                $output->writeln('One migration found:');
+                $output->writeln('<info>One</info> migration found:');
             } else {
-                $output->writeln("{$migrations_count} migrations found:");
+                $output->writeln("<info>{$migrations_count}</info> migrations found:");
             }
             $output->writeln('');
 
             foreach ($migrations as $migration) {
-                $output->writeln('    <comment>*</comment> ' . get_class($migration));
+                $execution_status = $this->getMigrations()->isExecuted($migration) ? '<info>Executed</info>' : '<comment>Not executed</comment>';
+                $output->writeln('    <comment>*</comment> ' . get_class($migration) . " ($execution_status)");
             }
+
+            $output->writeln('');
         } else {
             $output->writeln('No migrations found');
         }
