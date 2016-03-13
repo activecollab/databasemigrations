@@ -23,9 +23,28 @@ trait Up
      */
     protected function execute(InputInterface $input, OutputInterface $output)
     {
-        $this->getMigrations()->up(function($message) use ($output) {
-            $output->writeln($message);
-        });
+        $migrations = $this->getMigrations()->getMigrations();
+
+        if ($migrations_count = count($migrations)) {
+            $output->writeln('');
+
+            if ($migrations_count === 1) {
+                $output->writeln('<info>One migration</info> found. Executing...');
+            } else {
+                $output->writeln("<info>{$migrations_count} migrations</info> found. Executing...");
+            }
+            $output->writeln('');
+
+            $this->getMigrations()->up(function($message) use ($output) {
+                $output->writeln($message);
+            });
+
+            $output->writeln('');
+            $output->writeln('Done. Your database is up to date.');
+            $output->writeln('');
+        } else {
+            $output->writeln('No migrations found');
+        }
 
         return 0;
     }
