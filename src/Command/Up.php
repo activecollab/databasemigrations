@@ -36,7 +36,7 @@ trait Up
             $output->writeln('');
 
             $this->getMigrations()->up(function($message) use ($output) {
-                $output->writeln($message);
+                $output->writeln("    <comment>*</comment> $message);");
             });
 
             $output->writeln('');
