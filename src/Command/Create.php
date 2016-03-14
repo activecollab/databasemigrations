@@ -36,7 +36,7 @@ trait Create
             $migration_class = Inflector::classify(strtolower(str_replace([' ', '-'], ['_', '_'], $name)));
             $migration_class_path = $this->getMigrations()->getFinder()->prepareMigrationPath($migration_class, ...$this->getExtraArguments($input));
 
-            if ($this->getDryRun($input)) {
+            if ($this->isDryRun($input)) {
                 $output->writeln("Migration <comment>$migration_class</comment> will be create at <comment>$migration_class_path</comment>");
             } else {
                 $migration_dir_path = dirname($migration_class_path);
@@ -148,7 +148,7 @@ trait Create
      * @param  InputInterface $input
      * @return bool
      */
-    protected function getDryRun(InputInterface $input)
+    protected function isDryRun(InputInterface $input)
     {
         return false;
     }
