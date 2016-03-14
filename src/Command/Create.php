@@ -37,23 +37,23 @@ trait Create
             $migration_class_path = $this->getMigrations()->getFinder()->prepareMigrationPath($migration_class, ...$this->getExtraArguments($input));
 
             if ($this->isDryRun($input)) {
-                $output->writeln("Migration <comment>$migration_class</comment> will be create at <comment>$migration_class_path</comment>");
+                $output->writeln("Migration <comment>$migration_class</comment> will be create at <comment>$migration_class_path</comment> path.");
             } else {
                 $migration_dir_path = dirname($migration_class_path);
 
                 if (!is_dir($migration_dir_path)) {
                     if (mkdir($migration_dir_path, 0777, true)) {
-                        $output->writeln("Directory <comment>$migration_dir_path</comment> created");
+                        $output->writeln("Directory <comment>$migration_dir_path</comment> created.");
                     } else {
-                        throw new \RuntimeException("Failed to create '$migration_dir_path' directory");
+                        throw new \RuntimeException("Failed to create '$migration_dir_path' directory.");
                     }
                 }
 
                 if (is_file($migration_class_path)) {
-                    throw new \RuntimeException("Migration '$migration_class' already exists at '$migration_class_path'");
+                    throw new \RuntimeException("Migration '$migration_class' already exists at '$migration_class_path' path");
                 } else {
                     if (file_put_contents($migration_class_path, $this->getMigrationFileContents($migration_class))) {
-                        $output->writeln("File <comment>$migration_class_path</comment> created");
+                        $output->writeln("File <comment>$migration_class_path</comment> created.");
                     } else {
                         throw new \RuntimeException("Failed to create '$migration_class_path' file");
                     }
