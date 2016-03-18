@@ -9,6 +9,7 @@
 namespace ActiveCollab\DatabaseMigrations\Migration;
 
 use ActiveCollab\DatabaseConnection\ConnectionInterface;
+use Psr\Log\LoggerInterface;
 
 /**
  * @package ActiveCollab\DatabaseMigrations\Migration
@@ -18,14 +19,21 @@ abstract class Migration implements MigrationInterface
     /**
      * @var ConnectionInterface
      */
-    private $connection;
+    protected $connection;
+
+    /**
+     * @var LoggerInterface
+     */
+    protected $log;
 
     /**
      * @param ConnectionInterface $connection
+     * @param LoggerInterface|null $log
      */
-    public function __construct(ConnectionInterface &$connection)
+    public function __construct(ConnectionInterface &$connection, LoggerInterface &$log)
     {
         $this->connection = $connection;
+        $this->log = $log;
 
         $this->configure();
     }

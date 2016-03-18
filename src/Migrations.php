@@ -132,7 +132,7 @@ class Migrations implements MigrationsInterface
                     $reflection = new ReflectionClass($migration_class);
 
                     if ($reflection->implementsInterface(MigrationInterface::class) && !$reflection->isAbstract()) {
-                        $result[$migration_class] = new $migration_class($this->connection);
+                        $result[$migration_class] = new $migration_class($this->connection, $this->log);
                     }
                 } else {
                     throw new RuntimeException("Migration class '$migration_class' not found");
