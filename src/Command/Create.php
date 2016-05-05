@@ -85,7 +85,7 @@ trait Create
 
         if ($header_comment = $this->getHeaderComment()) {
             $contents[] = '/*';
-            $contents = array_merge($contents, array_map(function($line) {
+            $contents = array_merge($contents, array_map(function ($line) {
                 if ($line) {
                     return ' * ' . $line;
                 } else {

@@ -27,7 +27,7 @@ abstract class Migration implements MigrationInterface
     protected $log;
 
     /**
-     * @param ConnectionInterface $connection
+     * @param ConnectionInterface  $connection
      * @param LoggerInterface|null $log
      */
     public function __construct(ConnectionInterface &$connection, LoggerInterface &$log)

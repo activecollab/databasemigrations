@@ -39,7 +39,7 @@ trait All
                 $execution_status = $this->getMigrations()->isExecuted($migration) ? '<info>Executed</info>' : '<comment>Not executed</comment>';
                 $output->writeln('    <comment>*</comment> ' . get_class($migration) . " ($execution_status)");
             }
-            
+
             $output->writeln('');
         } else {
             $output->writeln('No migrations found');
