@@ -3,7 +3,6 @@
     "type": "library",
     "description": "Database schema migrations",
     "license": "MIT",
-    "prefer-stable": true,
     "keywords": [
         "migrations",
         "mysql",
@@ -18,8 +17,8 @@
     ],
     "require": {
         "php": ">=5.6.0",
-        "activecollab/databasestructure": "dev-master",
-        "activecollab/filesystem": "~0.1",
+        "activecollab/databasestructure": "^0.10.0",
+        "activecollab/filesystem": "^0.10.0",
         "doctrine/inflector": "~1.0",
         "psr/log": "~1.0.0"
     },
@@ -32,7 +31,7 @@
     "suggest": {
         "symfony/console": "Quickly implement commands that work with migrations via CLI"
     },
-    "minimum-stability": "dev",
+    "minimum-stability": "stable",
     "autoload": {
         "psr-4": {
             "ActiveCollab\\DatabaseMigrations\\": "src",
