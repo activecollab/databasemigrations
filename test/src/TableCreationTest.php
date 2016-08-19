@@ -22,7 +22,8 @@ class TableCreationTest extends TestCase
      */
     public function testTableNameIsRequired()
     {
-        new Migrations($this->connection, new MigrationsInChangesetsFinder($this->log, '', $this->migrations_path), $this->log, '');
+        $finder = new MigrationsInChangesetsFinder($this->log, '', $this->migrations_path);
+        new Migrations($this->connection, $finder, $this->log, '');
     }
 
     /**
@@ -30,7 +31,8 @@ class TableCreationTest extends TestCase
      */
     public function testTableDoesNotExistUntilRequested()
     {
-        $migrations = new Migrations($this->connection, new MigrationsInChangesetsFinder($this->log, '', $this->migrations_path), $this->log);
+        $finder = new MigrationsInChangesetsFinder($this->log, '', $this->migrations_path);
+        $migrations = new Migrations($this->connection, $finder, $this->log);
 
         $this->assertNotContains('executed_database_migrations', $this->connection->getTableNames());
         $this->assertEquals('executed_database_migrations', $migrations->getTableName());
@@ -42,7 +44,8 @@ class TableCreationTest extends TestCase
      */
     public function testTableNameCanBeCustomized()
     {
-        $migrations = new Migrations($this->connection, new MigrationsInChangesetsFinder($this->log, '', $this->migrations_path), $this->log, 'awesomeness');
+        $finder = new MigrationsInChangesetsFinder($this->log, '', $this->migrations_path);
+        $migrations = new Migrations($this->connection, $finder, $this->log, 'awesomeness');
 
         $this->assertNotContains('executed_database_migrations', $this->connection->getTableNames());
         $this->assertNotContains('awesomeness', $this->connection->getTableNames());

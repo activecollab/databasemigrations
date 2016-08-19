@@ -21,7 +21,8 @@ class ExecuteAfterTest extends TestCase
      */
     public function testFindFilePaths()
     {
-        $migrations = new Migrations($this->connection, new MigrationsInChangesetsFinder($this->log, 'ActiveCollab\DatabaseMigrations\Test\NamepsacedMigrations', $this->migrations_path), $this->log);
+        $finder = new MigrationsInChangesetsFinder($this->log, 'ActiveCollab\DatabaseMigrations\Test\NamepsacedMigrations', $this->migrations_path);
+        $migrations = new Migrations($this->connection, $finder, $this->log);
 
         $migrations = $migrations->getMigrations();
 

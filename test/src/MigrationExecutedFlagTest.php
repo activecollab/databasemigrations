@@ -29,7 +29,8 @@ class MigrationExecutedFlagTest extends TestCase
     {
         parent::setUp();
 
-        $this->migrations = new Migrations($this->connection, new MigrationsInChangesetsFinder($this->log, 'ActiveCollab\DatabaseMigrations\Test\NamepsacedMigrations', $this->migrations_path), $this->log);
+        $finder = new MigrationsInChangesetsFinder($this->log, 'ActiveCollab\DatabaseMigrations\Test\NamepsacedMigrations', $this->migrations_path);
+        $this->migrations = new Migrations($this->connection, $finder, $this->log);
     }
 
     /**

@@ -21,7 +21,8 @@ class ChangsetTimestampAndExecuteAfterTest extends TestCase
      */
     public function testFindFilePaths()
     {
-        $migrations = new Migrations($this->connection, new MigrationsInChangesetsFinder($this->log, 'ActiveCollab\DatabaseMigrations\Test\NamepsacedMigrations', $this->migrations_path, dirname(__DIR__) . '/changesets/inject_in_migrations_with_changeset'), $this->log);
+        $finder = new MigrationsInChangesetsFinder($this->log, 'ActiveCollab\DatabaseMigrations\Test\NamepsacedMigrations', $this->migrations_path, dirname(__DIR__) . '/changesets/inject_in_migrations_with_changeset');
+        $migrations = new Migrations($this->connection, $finder, $this->log);
 
         $migrations = $migrations->getMigrations();
 
