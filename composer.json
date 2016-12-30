@@ -16,8 +16,8 @@
         }
     ],
     "require": {
-        "php": ">=5.6.0",
-        "activecollab/databasestructure": "^0.10",
+        "php": ">=7.1",
+        "activecollab/databasestructure": "v1.0.x-dev",
         "activecollab/filesystem": "^0.10",
         "doctrine/inflector": "~1.0",
         "psr/log": "^1.0"
