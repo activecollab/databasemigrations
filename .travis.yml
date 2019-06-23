@@ -5,5 +5,5 @@ before_install:
     - composer self-update
 install: composer install --dev
 before_script:
-  - mysql -u root -e 'create database my'
+  - mysql -u root -e 'create database activecollab_database_migrations_test'
 script: php vendor/bin/phpunit
