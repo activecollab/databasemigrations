@@ -1,14 +1,11 @@
 language: php
 php:
-  - 5.6
-  - 7.0
-mysql:
-  database: activecollab_database_migrations_test
-  username: root
-  encoding: utf8mb4
-install:
-  - composer install --dev
-  - phpunit --version
+    - 7.1
+services:
+    - mysql
+before_install:
+    - composer self-update
+install: composer install --dev
 before_script:
-  - mysql -e 'create database activecollab_database_migrations_test'
-script: phpunit
+    - mysql -u root -e 'create database activecollab_database_migrations_test'
+script: php vendor/bin/phpunit
