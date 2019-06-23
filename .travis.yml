@@ -1,9 +1,11 @@
 language: php
 php:
-  - 7.1
+    - 7.1
+services:
+    - mysql
 before_install:
     - composer self-update
 install: composer install --dev
 before_script:
-  - mysql -u root -e 'create database activecollab_database_migrations_test'
+    - mysql -u root -e 'create database activecollab_database_migrations_test'
 script: php vendor/bin/phpunit
