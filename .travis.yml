@@ -9,5 +9,5 @@ install:
   - composer install --dev
   - phpunit --version
 before_script:
-  - mysql -e 'create database activecollab_database_migrations_test'
-script: vendor/bin/phpunit
+  - mysql -u root -e 'create database my'
+script: php vendor/bin/phpunit

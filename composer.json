@@ -17,21 +17,20 @@
     ],
     "require": {
         "php": ">=7.1",
-        "activecollab/databasestructure": "v1.0.x-dev",
+        "activecollab/databaseconnection": "^3.0",
         "activecollab/filesystem": "^0.10",
         "doctrine/inflector": "~1.0",
         "psr/log": "^1.0"
     },
     "require-dev": {
-        "friendsofphp/php-cs-fixer": "^1.0",
+        "friendsofphp/php-cs-fixer": "^2.0",
         "monolog/monolog": "^1.0",
         "phpunit/phpunit": "^5.0",
-        "symfony/console": "^2.7"
+        "symfony/console": "^4.0"
     },
     "suggest": {
         "symfony/console": "Quickly implement commands that work with migrations via CLI"
     },
-    "minimum-stability": "stable",
     "autoload": {
         "psr-4": {
             "ActiveCollab\\DatabaseMigrations\\": "src"
