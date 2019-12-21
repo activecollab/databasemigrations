@@ -6,17 +6,13 @@
  * (c) A51 doo <info@activecollab.com>. All rights reserved.
  */
 
+declare(strict_types=1);
+
 namespace ActiveCollab\DatabaseMigrations\Command;
 
 use ActiveCollab\DatabaseMigrations\MigrationsInterface;
 
-/**
- * @package ActiveCollab\DatabaseMigrations\Command
- */
 trait Base
 {
-    /**
-     * @return MigrationsInterface
-     */
-    abstract protected function &getMigrations();
+    abstract protected function getMigrations(): MigrationsInterface;
 }
