@@ -19,7 +19,7 @@ interface MigrationsInterface
     /**
      * @return FinderInterface
      */
-    public function &getFinder();
+    public function getFinder();
 
     /**
      * Find and return all migrations (using Finder object).
