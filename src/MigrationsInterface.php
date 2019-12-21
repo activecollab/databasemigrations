@@ -16,10 +16,7 @@ use ActiveCollab\DatabaseMigrations\Migration\MigrationInterface;
  */
 interface MigrationsInterface
 {
-    /**
-     * @return FinderInterface
-     */
-    public function getFinder();
+    public function getFinder(): FinderInterface;
 
     /**
      * Find and return all migrations (using Finder object).

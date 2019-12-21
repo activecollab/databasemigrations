@@ -61,10 +61,7 @@ class Migrations implements MigrationsInterface
         $this->table_name = $table_name;
     }
 
-    /**
-     * {@inheritdoc}
-     */
-    public function getFinder()
+    public function getFinder(): FinderInterface
     {
         return $this->finder;
     }
@@ -258,7 +255,15 @@ class Migrations implements MigrationsInterface
         $this->connection->transact(function () {
             $timestamp = new DateTimeValue();
 
-            $batch = $this->connection->batchInsert($this->getTableName(), ['migration', 'executed_at'], 50, ConnectionInterface::REPLACE);
+            $batch = $this->connection->batchInsert(
+                $this->getTableName(),
+                [
+                    'migration',
+                    'executed_at',
+                ],
+                50,
+                ConnectionInterface::REPLACE
+            );
 
             foreach ($this->getMigrations() as $migration) {
                 $batch->insert(get_class($migration), $timestamp);
