@@ -49,7 +49,7 @@ abstract class TestCase extends \PHPUnit_Framework_TestCase
 
         $this->log = new Logger('database_migrations_test', [new NullHandler()]);
 
-        $this->link = new \MySQLi('localhost', 'root', '');
+        $this->link = new \MySQLi('localhost', 'root', $this->getValidMySqlPassword());
 
         if ($this->link->connect_error) {
             throw new RuntimeException('Failed to connect to database. MySQL said: ' . $this->link->connect_error);
@@ -98,5 +98,10 @@ abstract class TestCase extends \PHPUnit_Framework_TestCase
         $this->link->close();
 
         parent::tearDown();
+    }
+
+    protected function getValidMySqlPassword(): string
+    {
+        return (string) getenv('DATABASE_CONNECTION_TEST_PASSWORD');
     }
 }

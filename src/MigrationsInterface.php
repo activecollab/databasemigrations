@@ -6,49 +6,22 @@
  * (c) A51 doo <info@activecollab.com>. All rights reserved.
  */
 
+declare(strict_types=1);
+
 namespace ActiveCollab\DatabaseMigrations;
 
 use ActiveCollab\DatabaseMigrations\Finder\FinderInterface;
 use ActiveCollab\DatabaseMigrations\Migration\MigrationInterface;
 
-/**
- * @package ActiveCollab\DatabaseMigrations
- */
 interface MigrationsInterface
 {
     public function getFinder(): FinderInterface;
+    public function getMigrations(): array;
 
-    /**
-     * Find and return all migrations (using Finder object).
-     *
-     * @return MigrationInterface[]
-     */
-    public function getMigrations();
+    public function up(callable $output = null): void;
 
-    /**
-     * Migrate up.
-     *
-     * @param callable|null $output
-     */
-    public function up(callable $output = null);
+    public function execute(MigrationInterface $migration): void;
+    public function isExecuted(MigrationInterface $migration): bool;
 
-    /**
-     * Execute an individual migraion.
-     *
-     * @param MigrationInterface $migration
-     */
-    public function execute(MigrationInterface $migration);
-
-    /**
-     * Return true if $migration is executed.
-     *
-     * @param  MigrationInterface $migration
-     * @return bool
-     */
-    public function isExecuted(MigrationInterface $migration);
-
-    /**
-     * Set all found migration as executed. Useful during app's installation, to mark existing migrations as migrated.
-     */
-    public function setAllAsExecuted();
+    public function setAllAsExecuted(): void;
 }

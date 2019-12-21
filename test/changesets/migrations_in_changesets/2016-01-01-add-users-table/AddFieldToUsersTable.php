@@ -10,23 +10,14 @@ namespace ActiveCollab\DatabaseMigrations\Test\NamepsacedMigrations;
 
 use ActiveCollab\DatabaseMigrations\Migration\Migration;
 
-/**
- * @package ActiveCollab\DatabaseMigrations\Test\NamepsacedMigrations
- */
 class AddFieldToUsersTable extends Migration
 {
-    /**
-     * {@inheritdoc}
-     */
-    protected function configure()
+    protected function configure(): void
     {
         $this->executeAfter(__DIR__ . '/AddUsersTable.php');
     }
 
-    /**
-     * {@inheritdoc}
-     */
-    public function up()
+    public function up(): void
     {
     }
 }

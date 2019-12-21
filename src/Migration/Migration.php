@@ -6,72 +6,43 @@
  * (c) A51 doo <info@activecollab.com>. All rights reserved.
  */
 
+declare(strict_types=1);
+
 namespace ActiveCollab\DatabaseMigrations\Migration;
 
 use ActiveCollab\DatabaseConnection\ConnectionInterface;
 use Psr\Log\LoggerInterface;
 
-/**
- * @package ActiveCollab\DatabaseMigrations\Migration
- */
 abstract class Migration implements MigrationInterface
 {
-    /**
-     * @var ConnectionInterface
-     */
     protected $connection;
+    protected $logger;
 
-    /**
-     * @var LoggerInterface
-     */
-    protected $log;
-
-    /**
-     * @param ConnectionInterface  $connection
-     * @param LoggerInterface|null $log
-     */
-    public function __construct(ConnectionInterface &$connection, LoggerInterface &$log)
+    public function __construct(ConnectionInterface $connection, LoggerInterface $logger)
     {
         $this->connection = $connection;
-        $this->log = $log;
+        $this->logger = $logger;
 
         $this->configure();
     }
 
-    /**
-     * Configure migration, after it has been constructed.
-     */
-    protected function configure()
+    protected function configure(): void
     {
     }
 
-    /**
-     * {@inheritdoc}
-     */
-    public function canExecute(&$reason = null)
+    public function canExecute(string &$reason = null): bool
     {
         return true;
     }
 
-    /**
-     * @var string[]
-     */
     private $execute_after = [];
 
-    /**
-     * {@inheritdoc}
-     */
-    public function getExecuteAfter()
+    public function getExecuteAfter(): array
     {
         return $this->execute_after;
     }
 
-    /**
-     * Make sure that this migration is executed after given list of migrations.
-     *
-     * @param array ...$migration_paths
-     */
-    protected function executeAfter(...$migration_paths)
+    protected function executeAfter(string ...$migration_paths): void
     {
         $this->execute_after = array_merge($this->execute_after, $migration_paths);
     }

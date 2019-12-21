@@ -35,7 +35,7 @@ class TableCreationTest extends TestCase
         $migrations = new Migrations($this->connection, $finder, $this->log);
 
         $this->assertNotContains('executed_database_migrations', $this->connection->getTableNames());
-        $this->assertEquals('executed_database_migrations', $migrations->getTableName());
+        $this->assertEquals('executed_database_migrations', $migrations->getXecutedmigrationsTableName());
         $this->assertContains('executed_database_migrations', $this->connection->getTableNames());
     }
 
@@ -49,7 +49,7 @@ class TableCreationTest extends TestCase
 
         $this->assertNotContains('executed_database_migrations', $this->connection->getTableNames());
         $this->assertNotContains('awesomeness', $this->connection->getTableNames());
-        $this->assertEquals('awesomeness', $migrations->getTableName());
+        $this->assertEquals('awesomeness', $migrations->getXecutedmigrationsTableName());
         $this->assertNotContains('executed_database_migrations', $this->connection->getTableNames());
         $this->assertContains('awesomeness', $this->connection->getTableNames());
     }

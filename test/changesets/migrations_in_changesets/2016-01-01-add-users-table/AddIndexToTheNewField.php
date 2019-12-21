@@ -6,27 +6,20 @@
  * (c) A51 doo <info@activecollab.com>. All rights reserved.
  */
 
+declare(strict_types=1);
+
 namespace ActiveCollab\DatabaseMigrations\Test\NamepsacedMigrations;
 
 use ActiveCollab\DatabaseMigrations\Migration\Migration;
 
-/**
- * @package ActiveCollab\DatabaseMigrations\Test\NamepsacedMigrations
- */
 class AddIndexToTheNewField extends Migration
 {
-    /**
-     * {@inheritdoc}
-     */
-    protected function configure()
+    protected function configure(): void
     {
         $this->executeAfter(__DIR__ . '/AddFieldToUsersTable.php');
     }
 
-    /**
-     * {@inheritdoc}
-     */
-    public function up()
+    public function up(): void
     {
     }
 }

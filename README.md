@@ -59,9 +59,9 @@ class AddUserRolesTable extends Migration
     public function up()
     {
         if (!in_array('user_roles', $this->connection->getTableNames()) {
-            $this->log->debug('{table} not found in the database', ['table' => 'user_roles']);
+            $this->logger->debug('{table} not found in the database', ['table' => 'user_roles']);
             $thos->connection->execute('CREATE TABLE STATEMENT');
-            $this->log->debug('{table} created', ['table' => 'user_roles']);
+            $this->logger->debug('{table} created', ['table' => 'user_roles']);
         }
     }
 }

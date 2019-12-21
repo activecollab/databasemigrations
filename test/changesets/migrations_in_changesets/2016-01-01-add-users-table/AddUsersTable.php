@@ -6,19 +6,15 @@
  * (c) A51 doo <info@activecollab.com>. All rights reserved.
  */
 
+declare(strict_types=1);
+
 namespace ActiveCollab\DatabaseMigrations\Test\NamepsacedMigrations;
 
 use ActiveCollab\DatabaseMigrations\Migration\Migration;
 
-/**
- * @package ActiveCollab\DatabaseMigrations\Test\NamepsacedMigrations
- */
 class AddUsersTable extends Migration
 {
-    /**
-     * {@inheritdoc}
-     */
-    public function up()
+    public function up(): void
     {
     }
 }

@@ -23,6 +23,7 @@
         "psr/log": "^1.0"
     },
     "require-dev": {
+        "ext-mysqli": "*",
         "friendsofphp/php-cs-fixer": "^2.0",
         "monolog/monolog": "^1.0",
         "phpunit/phpunit": "^5.0",

@@ -6,6 +6,8 @@
  * (c) A51 doo <info@activecollab.com>. All rights reserved.
  */
 
+declare(strict_types=1);
+
 namespace ActiveCollab\DatabaseMigrations;
 
 use ActiveCollab\DatabaseConnection\ConnectionInterface;
@@ -18,47 +20,28 @@ use Psr\Log\LoggerInterface;
 use ReflectionClass;
 use RuntimeException;
 
-/**
- * @package ActiveCollab\DatabaseMigrations
- */
 class Migrations implements MigrationsInterface
 {
-    /**
-     * @var ConnectionInterface
-     */
     private $connection;
-
-    /**
-     * @var FinderInterface
-     */
     private $finder;
+    private $logger;
+    private $xecuted_migrations_table_name;
 
-    /**
-     * @var LoggerInterface
-     */
-    private $log;
-
-    /**
-     * @var string
-     */
-    private $table_name;
-
-    /**
-     * @param ConnectionInterface $connection
-     * @param FinderInterface     $finder
-     * @param LoggerInterface     $log
-     * @param string              $table_name
-     */
-    public function __construct(ConnectionInterface &$connection, FinderInterface &$finder, LoggerInterface &$log, $table_name = 'executed_database_migrations')
+    public function __construct(
+        ConnectionInterface $connection,
+        FinderInterface $finder,
+        LoggerInterface $logger,
+        string $executed_migrations_table_name = 'executed_database_migrations'
+    )
     {
-        if (empty($table_name)) {
+        if (empty($executed_migrations_table_name)) {
             throw new InvalidArgumentException('Table name is required');
         }
 
         $this->connection = $connection;
         $this->finder = $finder;
-        $this->log = $log;
-        $this->table_name = $table_name;
+        $this->logger = $logger;
+        $this->xecuted_migrations_table_name = $executed_migrations_table_name;
     }
 
     public function getFinder(): FinderInterface
@@ -66,9 +49,6 @@ class Migrations implements MigrationsInterface
         return $this->finder;
     }
 
-    /**
-     * @var bool
-     */
     private $migrations_are_found = false;
 
     /**
@@ -76,10 +56,7 @@ class Migrations implements MigrationsInterface
      */
     private $migrations = [];
 
-    /**
-     * {@inheritdoc}
-     */
-    public function getMigrations()
+    public function getMigrations(): array
     {
         if (!$this->migrations_are_found) {
             $migration_class_file_path_map = $this->finder->getMigrationClassFilePathMap();
@@ -129,7 +106,7 @@ class Migrations implements MigrationsInterface
                     $reflection = new ReflectionClass($migration_class);
 
                     if ($reflection->implementsInterface(MigrationInterface::class) && !$reflection->isAbstract()) {
-                        $result[$migration_class] = new $migration_class($this->connection, $this->log);
+                        $result[$migration_class] = new $migration_class($this->connection, $this->logger);
                     }
                 } else {
                     throw new RuntimeException("Migration class '$migration_class' not found");
@@ -158,22 +135,19 @@ class Migrations implements MigrationsInterface
         }
     }
 
-    /**
-     * {@inheritdoc}
-     */
-    public function up(callable $output = null)
+    public function up(callable $output = null): void
     {
         foreach ($this->getMigrations() as $migration) {
             $migration_class = get_class($migration);
 
             if ($this->isExecuted($migration)) {
-                $this->log->debug('Migration {migration} already executed', ['migration' => $migration_class]);
+                $this->logger->debug('Migration {migration} already executed', ['migration' => $migration_class]);
 
                 if ($output) {
                     $output("Migration <comment>$migration_class</comment> is already executed");
                 }
             } else {
-                $this->log->debug('Ready to execute {migration} migration', ['migration' => $migration_class]);
+                $this->logger->debug('Ready to execute {migration} migration', ['migration' => $migration_class]);
 
                 if ($output) {
                     $output("Ready to execute <comment>$migration_class</comment> migration");
@@ -183,7 +157,7 @@ class Migrations implements MigrationsInterface
                 $this->execute($migration);
                 $exec_time = number_format(microtime(true) - $reference_time, 5, '.', '');
 
-                $this->log->debug('Migration {migration} executed', ['migration' => $migration_class, 'exec_time' => (float) $exec_time]);
+                $this->logger->debug('Migration {migration} executed', ['migration' => $migration_class, 'exec_time' => (float) $exec_time]);
 
                 if ($output) {
                     $output("Migration <comment>$migration_class</comment> is executed in <comment>$exec_time seconds</comment>");
@@ -202,10 +176,10 @@ class Migrations implements MigrationsInterface
      *
      * @return string
      */
-    public function getTableName()
+    public function getXecutedmigrationsTableName()
     {
-        if ($this->table_exists === null && !in_array($this->table_name, $this->connection->getTableNames())) {
-            $this->connection->execute('CREATE TABLE ' . $this->connection->escapeTableName($this->table_name) . ' (
+        if ($this->table_exists === null && !in_array($this->xecuted_migrations_table_name, $this->connection->getTableNames())) {
+            $this->connection->execute('CREATE TABLE ' . $this->connection->escapeTableName($this->xecuted_migrations_table_name) . ' (
                 `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
                 `migration` varchar(191) COLLATE utf8mb4_unicode_ci NOT NULL,
                 `executed_at` datetime NOT NULL,
@@ -217,59 +191,63 @@ class Migrations implements MigrationsInterface
             $this->table_exists = true;
         }
 
-        return $this->table_name;
+        return $this->xecuted_migrations_table_name;
     }
 
-    /**
-     * {@inheritdoc}
-     */
-    public function execute(MigrationInterface $migration)
+    public function execute(MigrationInterface $migration): void
     {
         if ($this->isExecuted($migration)) {
             throw new LogicException('Migration ' . get_class($migration) . ' is already executed');
         }
 
-        $this->connection->transact(function () use ($migration) {
-            $migration->up();
+        $this->connection->transact(
+            function () use ($migration) {
+                $migration->up();
 
-            $this->connection->insert($this->getTableName(), [
-                'migration' => get_class($migration),
-                'executed_at' => new DateTimeValue(),
-            ]);
-        });
-    }
-
-    /**
-     * {@inheritdoc}
-     */
-    public function isExecuted(MigrationInterface $migration)
-    {
-        return (bool) $this->connection->count($this->getTableName(), ['`migration` = ?', get_class($migration)]);
-    }
-
-    /**
-     * {@inheritdoc}
-     */
-    public function setAllAsExecuted()
-    {
-        $this->connection->transact(function () {
-            $timestamp = new DateTimeValue();
-
-            $batch = $this->connection->batchInsert(
-                $this->getTableName(),
-                [
-                    'migration',
-                    'executed_at',
-                ],
-                50,
-                ConnectionInterface::REPLACE
+                $this->connection->insert
+                ($this->getXecutedmigrationsTableName(),
+                    [
+                        'migration' => get_class($migration),
+                        'executed_at' => new DateTimeValue(),
+                    ]
+                );
+                }
             );
+    }
 
-            foreach ($this->getMigrations() as $migration) {
-                $batch->insert(get_class($migration), $timestamp);
+    public function isExecuted(MigrationInterface $migration): bool
+    {
+        return (bool) $this->connection->count(
+            $this->getXecutedmigrationsTableName(),
+            [
+                '`migration` = ?',
+                get_class($migration)
+            ]
+        );
+    }
+
+    public function setAllAsExecuted(): void
+    {
+        $this->connection->transact(
+            function () {
+                $timestamp = new DateTimeValue();
+
+                $batch = $this->connection->batchInsert(
+                    $this->getXecutedmigrationsTableName(),
+                    [
+                        'migration',
+                        'executed_at',
+                    ],
+                    50,
+                    ConnectionInterface::REPLACE
+                );
+
+                foreach ($this->getMigrations() as $migration) {
+                    $batch->insert(get_class($migration), $timestamp);
+                }
+
+                $batch->done();
             }
-
-            $batch->done();
-        });
+        );
     }
 }
