@@ -6,22 +6,21 @@
  * (c) A51 doo <info@activecollab.com>. All rights reserved.
  */
 
+declare(strict_types=1);
+
 namespace ActiveCollab\DatabaseMigrations\Command;
 
 use Doctrine\Common\Inflector\Inflector;
+use Exception;
+use InvalidArgumentException;
+use RuntimeException;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
 
-/**
- * @package ActiveCollab\DatabaseMigrations\Command
- */
 trait Create
 {
     use Base;
 
-    /**
-     * {@inheritdoc}
-     */
     protected function execute(InputInterface $input, OutputInterface $output)
     {
         $old_umask = umask(0);
@@ -30,7 +29,7 @@ trait Create
             $name = $this->getMigrationName($input);
 
             if (empty($name)) {
-                throw new \InvalidArgumentException('Migration name is required');
+                throw new InvalidArgumentException('Migration name is required');
             }
 
             $migration_class = Inflector::classify(strtolower(str_replace([' ', '-'], ['_', '_'], $name)));
@@ -45,21 +44,21 @@ trait Create
                     if (mkdir($migration_dir_path, 0777, true)) {
                         $output->writeln("Directory <comment>$migration_dir_path</comment> created.");
                     } else {
-                        throw new \RuntimeException("Failed to create '$migration_dir_path' directory.");
+                        throw new RuntimeException("Failed to create '$migration_dir_path' directory.");
                     }
                 }
 
                 if (is_file($migration_class_path)) {
-                    throw new \RuntimeException("Migration '$migration_class' already exists at '$migration_class_path' path");
+                    throw new RuntimeException("Migration '$migration_class' already exists at '$migration_class_path' path");
                 } else {
                     if (file_put_contents($migration_class_path, $this->getMigrationFileContents($migration_class))) {
                         $output->writeln("File <comment>$migration_class_path</comment> created.");
                     } else {
-                        throw new \RuntimeException("Failed to create '$migration_class_path' file");
+                        throw new RuntimeException("Failed to create '$migration_class_path' file");
                     }
                 }
             }
-        } catch (\Exception $e) {
+        } catch (Exception $e) {
             throw $e;
         } finally {
             umask($old_umask);
@@ -68,13 +67,7 @@ trait Create
         return 0;
     }
 
-    /**
-     * Generate migration class contents.
-     *
-     * @param  string $class_name
-     * @return string
-     */
-    private function getMigrationFileContents($class_name)
+    private function getMigrationFileContents(string $class_name): string
     {
         $namespace = $this->getNamespace();
 
@@ -95,6 +88,9 @@ trait Create
             $contents[] = ' */';
             $contents[] = '';
         }
+
+        $contents[] = 'declare(strict_types=1);';
+        $contents[] = '';
 
         if ($namespace) {
             $contents[] = 'namespace ' . $namespace . ';';
@@ -119,43 +115,24 @@ trait Create
     //  Override
     // ---------------------------------------------------
 
-    /**
-     * @return string
-     */
-    protected function getHeaderComment()
+    protected function getHeaderComment(): string
+    {
+        return '';
+    }
+    protected function getNamespace(): string
     {
         return '';
     }
 
-    /**
-     * @return string
-     */
-    protected function getNamespace()
-    {
-        return '';
-    }
-
-    /**
-     * @param  InputInterface $input
-     * @return bool
-     */
-    protected function isDryRun(InputInterface $input)
+    protected function isDryRun(InputInterface $input): bool
     {
         return false;
     }
 
-    /**
-     * @param  InputInterface $input
-     * @return array
-     */
-    protected function getExtraArguments(InputInterface $input)
+    protected function getExtraArguments(InputInterface $input): array
     {
         return [];
     }
 
-    /**
-     * @param  InputInterface $input
-     * @return string
-     */
-    abstract public function getMigrationName(InputInterface $input);
+    abstract public function getMigrationName(InputInterface $input): string;
 }
