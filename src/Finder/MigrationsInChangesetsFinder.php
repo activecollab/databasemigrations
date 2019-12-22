@@ -6,6 +6,8 @@
  * (c) A51 doo <info@activecollab.com>. All rights reserved.
  */
 
+declare(strict_types=1);
+
 namespace ActiveCollab\DatabaseMigrations\Finder;
 
 use ActiveCollab\DateValue\DateTimeValue;
@@ -17,32 +19,13 @@ use InvalidArgumentException;
 use Psr\Log\LoggerInterface;
 use RuntimeException;
 
-/**
- * @package ActiveCollab\DatabaseMigrations\Finder
- */
 class MigrationsInChangesetsFinder implements FinderInterface
 {
-    /**
-     * @var LoggerInterface
-     */
-    private $log;
-
-    /**
-     * @var string
-     */
+    private $logger;
     private $namespace;
-
-    /**
-     * @var string[]
-     */
     private $migrations_dirs;
 
-    /**
-     * @param LoggerInterface $log
-     * @param string          $namespace
-     * @param string[]        ...$migrations_dirs
-     */
-    public function __construct(LoggerInterface &$log, $namespace, ...$migrations_dirs)
+    public function __construct(LoggerInterface $logger, $namespace, string ...$migrations_dirs)
     {
         if (empty($migrations_dirs)) {
             throw new BadMethodCallException('Migration dir, or a list of migration dirs is required');
@@ -54,15 +37,12 @@ class MigrationsInChangesetsFinder implements FinderInterface
             }
         }
 
-        $this->log = $log;
+        $this->logger = $logger;
         $this->namespace = $namespace ? '\\' . ltrim($namespace, '\\') : '';
         $this->migrations_dirs = $migrations_dirs;
     }
 
-    /**
-     * {@inheritdoc}
-     */
-    public function getMigrationClassFilePathMap()
+    public function getMigrationClassFilePathMap(): array
     {
         $migrations_by_changeset = [];
         $total_migrations_found = 0;
@@ -84,7 +64,13 @@ class MigrationsInChangesetsFinder implements FinderInterface
                     }
 
                     if (empty($migrations_found)) {
-                        $this->log->debug('No migrations found in {migrations_dir}/{changeset}', ['migrations_dir' => $migrations_dir, 'changeset' => $changeset_dir]);
+                        $this->logger->debug(
+                            'No migrations found in {migrations_dir}/{changeset}',
+                            [
+                                'migrations_dir' => $migrations_dir,
+                                'changeset' => $changeset_dir
+                            ]
+                        );
                     } else {
                         $total_migrations_found += $migrations_found;
                     }
@@ -94,7 +80,14 @@ class MigrationsInChangesetsFinder implements FinderInterface
             }
         }
 
-        $this->log->debug('{total_migrations} migrations found {total_changesets} changesets', ['total_migrations' => $total_migrations_found, 'total_changesets' => count($migrations_by_changeset), 'changesets' => array_keys($migrations_by_changeset)]);
+        $this->logger->debug(
+            '{total_migrations} migrations found {total_changesets} changesets',
+            [
+                'total_migrations' => $total_migrations_found,
+                'total_changesets' => count($migrations_by_changeset),
+                'changesets' => array_keys($migrations_by_changeset)
+            ]
+        );
 
         ksort($migrations_by_changeset);
 
@@ -113,28 +106,23 @@ class MigrationsInChangesetsFinder implements FinderInterface
      * @param  string $changeset_name
      * @return bool
      */
-    public function isValidChangesetName($changeset_name)
+    public function isValidChangesetName($changeset_name): bool
     {
         return (bool) preg_match('/^(\d{4})-(\d{2})-(\d{2})-(.*)$/', $changeset_name);
     }
 
-    /**
-     * Prepare full class name.
-     *
-     * @param  string $migration_file_path
-     * @return string
-     */
-    private function getMigrationClassName($migration_file_path)
+    private function getMigrationClassName(string $migration_file_path): string
     {
         $migration_class = basename($migration_file_path, '.php');
 
         return $this->namespace ? $this->namespace . '\\' . $migration_class : $migration_class;
     }
 
-    /**
-     * {@inheritdoc}
-     */
-    public function prepareMigrationPath($classified_name, $migrations_dir = null, ...$extra_arguments)
+    public function prepareMigrationPath(
+        string $classified_name,
+        string $migrations_dir = null,
+        ...$extra_arguments
+    ): string
     {
         if ($migrations_dir === null) {
             $migrations_dir = $this->migrations_dirs[0];
