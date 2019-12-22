@@ -104,18 +104,9 @@ trait Create
         $contents[] = 'use ActiveCollab\DatabaseMigrations\Migration\Migration;';
         $contents[] = '';
 
-        if ($namespace) {
-            $contents[] = '/**';
-            $contents[] = ' * @package ' . $namespace;
-            $contents[] = ' */';
-        }
-
         $contents[] = 'class ' . $class_name . ' extends Migration';
         $contents[] = '{';
-        $contents[] = '    /**';
-        $contents[] = '     * {@inheritdoc}';
-        $contents[] = '     */';
-        $contents[] = '    public function up()';
+        $contents[] = '    public function up(): void';
         $contents[] = '    {';
         $contents[] = '    }';
         $contents[] = '}';
