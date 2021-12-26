@@ -14,11 +14,12 @@ use Monolog\Logger;
 use mysqli;
 use Psr\Log\LoggerInterface;
 use RuntimeException;
+use PHPUnit\Framework\TestCase as BaseTestCase;
 
 /**
  * @package ActiveCollab\DatabaseMigrations\Test
  */
-abstract class TestCase extends \PHPUnit_Framework_TestCase
+abstract class TestCase extends BaseTestCase
 {
     /**
      * @var LoggerInterface
@@ -40,10 +41,7 @@ abstract class TestCase extends \PHPUnit_Framework_TestCase
      */
     protected $migrations_path;
 
-    /**
-     * Set up test environment.
-     */
-    public function setUp()
+    public function setUp(): void
     {
         parent::setUp();
 
@@ -77,10 +75,7 @@ abstract class TestCase extends \PHPUnit_Framework_TestCase
         $this->assertFileExists($this->migrations_path);
     }
 
-    /**
-     * Tear down test environment.
-     */
-    public function tearDown()
+    public function tearDown(): void
     {
         if ($triggers = $this->connection->execute('SHOW TRIGGERS')) {
             foreach ($triggers as $trigger) {

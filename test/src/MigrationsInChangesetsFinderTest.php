@@ -9,36 +9,36 @@
 namespace ActiveCollab\DatabaseMigrations\Test;
 
 use ActiveCollab\DatabaseMigrations\Finder\MigrationsInChangesetsFinder;
+use BadMethodCallException;
+use InvalidArgumentException;
+use RuntimeException;
 
 /**
  * @package ActiveCollab\DatabaseMigrations\Test
  */
 class MigrationsInChangesetsFinderTest extends TestCase
 {
-    /**
-     * @expectedException \BadMethodCallException
-     * @expectedExceptionMessage Migration dir, or a list of migration dirs is required
-     */
     public function testErrorWhenNoMigrationDirsSet()
     {
+        $this->expectException(BadMethodCallException::class);
+        $this->expectExceptionMessage("Migration dir, or a list of migration dirs is required");
+
         new MigrationsInChangesetsFinder($this->log, '');
     }
 
-    /**
-     * @expectedException \InvalidArgumentException
-     * @expectedExceptionMessage Directory 'not a valid migrations dir' does not exist
-     */
     public function testErrorOnInvalidMigrationsDir()
     {
+        $this->expectException(InvalidArgumentException::class);
+        $this->expectExceptionMessage("Directory 'not a valid migrations dir' does not exist");
+
         new MigrationsInChangesetsFinder($this->log, '', 'not a valid migrations dir');
     }
 
-    /**
-     * @expectedException \RuntimeException
-     * @expectedExceptionMessage Value 'invalid_changeset_name' is not a valid changeset name
-     */
     public function testErrorOnInvalidChangsetName()
     {
+        $this->expectException(RuntimeException::class);
+        $this->expectExceptionMessage("Value 'invalid_changeset_name' is not a valid changeset name");
+
         (new MigrationsInChangesetsFinder($this->log, '', dirname(__DIR__) . '/changesets/migrations_with_invalid_changeset_name'))->getMigrationClassFilePathMap();
     }
 
@@ -51,7 +51,7 @@ class MigrationsInChangesetsFinderTest extends TestCase
 
         $map = $finder->getMigrationClassFilePathMap();
 
-        $this->assertInternalType('array', $map);
+        $this->assertIsArray($map);
         $this->assertCount(4, $map);
 
         $this->assertContains("$this->migrations_path/2016-01-01-add-users-table/AddUsersTable.php", $map);
@@ -69,7 +69,7 @@ class MigrationsInChangesetsFinderTest extends TestCase
 
         $map = $finder->getMigrationClassFilePathMap();
 
-        $this->assertInternalType('array', $map);
+        $this->assertIsArray($map);
         $this->assertCount(4, $map);
 
         $this->assertArrayHasKey('AddUsersTable', $map);
@@ -87,7 +87,7 @@ class MigrationsInChangesetsFinderTest extends TestCase
 
         $map = $finder->getMigrationClassFilePathMap();
 
-        $this->assertInternalType('array', $map);
+        $this->assertIsArray($map);
         $this->assertCount(4, $map);
 
         $this->assertArrayHasKey('\ActiveCollab\DatabaseMigrations\Test\NamepsacedMigrations\AddUsersTable', $map);
@@ -105,7 +105,7 @@ class MigrationsInChangesetsFinderTest extends TestCase
 
         $map = $finder->getMigrationClassFilePathMap();
 
-        $this->assertInternalType('array', $map);
+        $this->assertIsArray($map);
         $this->assertCount(5, $map);
 
         $this->assertArrayHasKey('\ActiveCollab\DatabaseMigrations\Test\NamepsacedMigrations\AddUsersTable', $map);

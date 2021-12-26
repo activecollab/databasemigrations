@@ -11,6 +11,7 @@ namespace ActiveCollab\DatabaseMigrations\Test;
 use ActiveCollab\DatabaseMigrations\Finder\MigrationsInChangesetsFinder;
 use ActiveCollab\DatabaseMigrations\Migrations;
 use ActiveCollab\DatabaseMigrations\MigrationsInterface;
+use LogicException;
 
 /**
  * @package ActiveCollab\DatabaseMigrations\Test
@@ -22,10 +23,7 @@ class MigrationExecutedFlagTest extends TestCase
      */
     private $migrations;
 
-    /**
-     * {@inheritdoc}
-     */
-    public function setUp()
+    public function setUp(): void
     {
         parent::setUp();
 
@@ -55,12 +53,11 @@ class MigrationExecutedFlagTest extends TestCase
         $this->assertTrue($this->migrations->isExecuted($migration));
     }
 
-    /**
-     * @expectedException \LogicException
-     * @expectedExceptionMessage Migration ActiveCollab\DatabaseMigrations\Test\NamepsacedMigrations\AddUsersTable is already executed
-     */
     public function testMigrationsCantBeExecutedTwice()
     {
+        $this->expectException(LogicException::class);
+        $this->expectExceptionMessage("Migration ActiveCollab\DatabaseMigrations\Test\NamepsacedMigrations\AddUsersTable is already executed");
+
         $migration = $this->migrations->getMigrations()[0];
 
         $this->migrations->execute($migration);

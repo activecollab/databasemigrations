@@ -26,7 +26,7 @@ class ChangsetTimestampAndExecuteAfterTest extends TestCase
 
         $migrations = $migrations->getMigrations();
 
-        $this->assertInternalType('array', $migrations);
+        $this->assertIsArray($migrations);
         $this->assertCount(5, $migrations);
 
         $this->assertInstanceOf('\ActiveCollab\DatabaseMigrations\Test\NamepsacedMigrations\AddUsersTable', $migrations[0]);

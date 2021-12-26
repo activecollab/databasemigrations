@@ -10,18 +10,18 @@ namespace ActiveCollab\DatabaseMigrations\Test;
 
 use ActiveCollab\DatabaseMigrations\Finder\MigrationsInChangesetsFinder;
 use ActiveCollab\DatabaseMigrations\Migrations;
+use InvalidArgumentException;
 
 /**
  * @package ActiveCollab\DatabaseMigrations\Test
  */
 class TableCreationTest extends TestCase
 {
-    /**
-     * @expectedException \InvalidArgumentException
-     * @expectedExceptionMessage Table name is required
-     */
     public function testTableNameIsRequired()
     {
+        $this->expectException(InvalidArgumentException::class);
+        $this->expectExceptionMessage("Table name is required");
+
         $finder = new MigrationsInChangesetsFinder($this->log, '', $this->migrations_path);
         new Migrations($this->connection, $finder, $this->log, '');
     }

@@ -26,7 +26,7 @@ class ExecuteAfterTest extends TestCase
 
         $migrations = $migrations->getMigrations();
 
-        $this->assertInternalType('array', $migrations);
+        $this->assertIsArray($migrations);
         $this->assertCount(4, $migrations);
 
         $this->assertInstanceOf('\ActiveCollab\DatabaseMigrations\Test\NamepsacedMigrations\AddUsersTable', $migrations[0]);
