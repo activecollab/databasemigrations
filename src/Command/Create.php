@@ -10,7 +10,7 @@ declare(strict_types=1);
 
 namespace ActiveCollab\DatabaseMigrations\Command;
 
-use Doctrine\Common\Inflector\Inflector;
+use Doctrine\Inflector\InflectorFactory;
 use Exception;
 use InvalidArgumentException;
 use RuntimeException;
@@ -32,7 +32,7 @@ trait Create
                 throw new InvalidArgumentException('Migration name is required');
             }
 
-            $migration_class = Inflector::classify(strtolower(str_replace([' ', '-'], ['_', '_'], $name)));
+            $migration_class = InflectorFactory::create()->build()->classify(strtolower(str_replace([' ', '-'], ['_', '_'], $name)));
             $migration_class_path = $this->getMigrations()->getFinder()->prepareMigrationPath($migration_class, ...$this->getExtraArguments($input));
 
             if ($this->isDryRun($input)) {

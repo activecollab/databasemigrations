@@ -14,14 +14,14 @@ use ActiveCollab\DateValue\DateTimeValue;
 use ActiveCollab\FileSystem\Adapter\LocalAdapter;
 use ActiveCollab\FileSystem\FileSystem;
 use BadMethodCallException;
-use Doctrine\Common\Inflector\Inflector;
+use Doctrine\Inflector\InflectorFactory;
 use InvalidArgumentException;
 use Psr\Log\LoggerInterface;
 use RuntimeException;
 
 class MigrationsInChangesetsFinder implements FinderInterface
 {
-    private $logger;
+    private LoggerInterface $logger;
     private $namespace;
     private $migrations_dirs;
 
@@ -134,7 +134,7 @@ class MigrationsInChangesetsFinder implements FinderInterface
             throw new InvalidArgumentException("Directory '$migrations_dir' is not managed by this finder");
         }
 
-        $underscore_name = Inflector::tableize($classified_name);
+        $underscore_name = InflectorFactory::create()->build()->tableize($classified_name);
 
         if (array_key_exists(0, $extra_arguments)) {
             if (trim($extra_arguments[0])) {

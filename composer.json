@@ -19,7 +19,7 @@
         "php": ">=8.0",
         "activecollab/databaseconnection": "^5.0",
         "activecollab/filesystem": "^0.10",
-        "doctrine/inflector": "~1.0",
+        "doctrine/inflector": "^2.0",
         "psr/log": "^1.0"
     },
     "require-dev": {
